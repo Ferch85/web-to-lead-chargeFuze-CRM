@@ -402,7 +402,8 @@
      * rather than exposing a secret API key directly in the browser.
      * ===================================================================== */
     const API_KEY = 'e5c584710513d22abfde9c59723a85c6eab7673c2b5370e35bbfa36d99cc9b10';
-    const API_URL = 'https://service-crm-olive.vercel.app/api/internal/leads';
+    // Token-protected public endpoint (/api/internal/leads is for the CRM's own UI and has no CORS).
+    const API_URL = 'https://service-crm-olive.vercel.app/api/leads';
 
     const FIELDS = [
       'firstName', 'lastName', 'company', 'title', 'email', 'phone',
@@ -503,6 +504,13 @@
     function extractErrorMessage(data) {
       if (!data) return '';
       if (typeof data === 'string') return data;
+
+      // CRM validation errors: { error: { details: { fieldErrors: { lastName: ["..."] } } } }
+      const fieldErrors = data.error && data.error.details && data.error.details.fieldErrors;
+      if (fieldErrors && typeof fieldErrors === 'object') {
+        const messages = Object.values(fieldErrors).flat().filter((m) => typeof m === 'string');
+        if (messages.length) return messages.join(' ');
+      }
 
       const candidates = [data.message, data.error, data.detail, data.error_description];
       for (const c of candidates) {
