@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --border-focus: #2563eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-disabled: #93c5fd;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+      --radius: 8px;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 40px 16px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 40px;
+    }
+
+    .header { margin-bottom: 28px; }
+
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .required-note {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin: 12px 0 0;
+    }
+
+    .required-note .req { color: var(--danger); font-weight: 600; }
+
+    .section-title {
+      grid-column: 1 / -1;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 12px 0 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 24px;
+    }
+
+    .field { display: flex; flex-direction: column; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    label .req {
+      color: var(--danger);
+      margin-left: 2px;
+    }
+
+    input, select {
+      font: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      width: 100%;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M1.4 0 6 4.6 10.6 0 12 1.4l-6 6-6-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    input.required-field, select.required-field {
+      border-left: 3px solid var(--primary);
+    }
+
+    .field.invalid input,
+    .field.invalid select {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
+    .error-text {
+      display: none;
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    .field.invalid .error-text { display: block; }
+
+    .status {
+      display: none;
+      margin-top: 24px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+    }
+
+    .status.show { display: block; }
+
+    .status.success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success);
+    }
+
+    .status.error {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger);
+    }
+
+    .status strong { display: block; margin-bottom: 2px; }
+
+    .actions {
+      margin-top: 28px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    button[type="submit"] {
+      font: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: var(--radius);
+      padding: 12px 32px;
+      cursor: pointer;
+      min-width: 160px;
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+
+    button[type="submit"]:hover:not(:disabled) { background: var(--primary-hover); }
+    button[type="submit"]:active:not(:disabled) { transform: translateY(1px); }
+    button[type="submit"]:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35);
+    }
+
+    button[type="submit"]:disabled {
+      background: var(--primary-disabled);
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      vertical-align: -3px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    button.loading .spinner { display: inline-block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      body { padding: 16px; }
+      .container { padding: 24px 20px; border-radius: 10px; }
+      .header h1 { font-size: 1.45rem; }
+      .form-grid { grid-template-columns: 1fr; gap: 16px; }
+      .actions { justify-content: stretch; }
+      button[type="submit"] { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="header">
+      <h1>Get in Touch</h1>
+      <p>Tell us a little about yourself and your company, and our team will reach out shortly.</p>
+      <p class="required-note">Fields marked with <span class="req">*</span> are required.</p>
+    </div>
+
+    <form id="leadForm" novalidate>
+      <div class="form-grid">
+        <h2 class="section-title">Contact Information</h2>
+
+        <div class="field">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" autocomplete="given-name" maxlength="40" />
+        </div>
+
+        <div class="field">
+          <label for="lastName">Last Name<span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="lastName" name="lastName" class="required-field" autocomplete="family-name" maxlength="80" required aria-required="true" aria-describedby="lastName-error" />
+          <span class="error-text" id="lastName-error">Last Name is required.</span>
+        </div>
+
+        <div class="field">
+          <label for="company">Company<span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="company" name="company" class="required-field" autocomplete="organization" maxlength="255" required aria-required="true" aria-describedby="company-error" />
+          <span class="error-text" id="company-error">Company is required.</span>
+        </div>
+
+        <div class="field">
+          <label for="title">Title</label>
+          <select id="title" name="title">
+            <option value="">Select a title</option>
+            <option value="CEO">CEO</option>
+            <option value="CFO">CFO</option>
+            <option value="COO">COO</option>
+            <option value="CTO">CTO</option>
+            <option value="CIO">CIO</option>
+            <option value="CMO">CMO</option>
+            <option value="President">President</option>
+            <option value="Vice President">Vice President</option>
+            <option value="Director">Director</option>
+            <option value="Manager">Manager</option>
+            <option value="Owner">Owner</option>
+            <option value="Founder">Founder</option>
+            <option value="Partner">Partner</option>
+            <option value="Consultant">Consultant</option>
+            <option value="Administrator">Administrator</option>
+            <option value="Engineer">Engineer</option>
+            <option value="Developer">Developer</option>
+            <option value="Sales">Sales</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Operations">Operations</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" maxlength="80" placeholder="name@company.com" aria-describedby="email-error" />
+          <span class="error-text" id="email-error">Please enter a valid email address.</span>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" maxlength="40" placeholder="(555) 123-4567" aria-describedby="phone-error" />
+          <span class="error-text" id="phone-error">Please enter a valid phone number.</span>
+        </div>
+
+        <div class="field full">
+          <label for="website">Website</label>
+          <input type="url" id="website" name="website" autocomplete="url" maxlength="255" placeholder="https://www.example.com" aria-describedby="website-error" />
+          <span class="error-text" id="website-error">Please enter a valid website address.</span>
+        </div>
+
+        <h2 class="section-title">Address</h2>
+
+        <div class="field full">
+          <label for="street">Street</label>
+          <input type="text" id="street" name="street" autocomplete="street-address" maxlength="255" />
+        </div>
+
+        <div class="field">
+          <label for="city">City</label>
+          <input type="text" id="city" name="city" autocomplete="address-level2" maxlength="40" />
+        </div>
+
+        <div class="field">
+          <label for="state">State</label>
+          <select id="state" name="state" autocomplete="address-level1">
+            <option value="">Select a state</option>
+            <option value="AL">Alabama</option>
+            <option value="AK">Alaska</option>
+            <option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option>
+            <option value="CA">California</option>
+            <option value="CO">Colorado</option>
+            <option value="CT">Connecticut</option>
+            <option value="DE">Delaware</option>
+            <option value="FL">Florida</option>
+            <option value="GA">Georgia</option>
+            <option value="HI">Hawaii</option>
+            <option value="ID">Idaho</option>
+            <option value="IL">Illinois</option>
+            <option value="IN">Indiana</option>
+            <option value="IA">Iowa</option>
+            <option value="KS">Kansas</option>
+            <option value="KY">Kentucky</option>
+            <option value="LA">Louisiana</option>
+            <option value="ME">Maine</option>
+            <option value="MD">Maryland</option>
+            <option value="MA">Massachusetts</option>
+            <option value="MI">Michigan</option>
+            <option value="MN">Minnesota</option>
+            <option value="MS">Mississippi</option>
+            <option value="MO">Missouri</option>
+            <option value="MT">Montana</option>
+            <option value="NE">Nebraska</option>
+            <option value="NV">Nevada</option>
+            <option value="NH">New Hampshire</option>
+            <option value="NJ">New Jersey</option>
+            <option value="NM">New Mexico</option>
+            <option value="NY">New York</option>
+            <option value="NC">North Carolina</option>
+            <option value="ND">North Dakota</option>
+            <option value="OH">Ohio</option>
+            <option value="OK">Oklahoma</option>
+            <option value="OR">Oregon</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="RI">Rhode Island</option>
+            <option value="SC">South Carolina</option>
+            <option value="SD">South Dakota</option>
+            <option value="TN">Tennessee</option>
+            <option value="TX">Texas</option>
+            <option value="UT">Utah</option>
+            <option value="VT">Vermont</option>
+            <option value="VA">Virginia</option>
+            <option value="WA">Washington</option>
+            <option value="WV">West Virginia</option>
+            <option value="WI">Wisconsin</option>
+            <option value="WY">Wyoming</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="postalCode">Postal Code</label>
+          <input type="text" id="postalCode" name="postalCode" autocomplete="postal-code" inputmode="numeric" maxlength="20" placeholder="12345" />
+        </div>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+
+      <div class="actions">
+        <button type="submit" id="submitBtn">
+          <span class="spinner" aria-hidden="true"></span><span class="btn-label">Submit</span>
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    /* =====================================================================
+     * CONFIGURATION
+     * ---------------------------------------------------------------------
+     * Replace the placeholder below with your real API key.
+     *
+     * SECURITY NOTE: Because this is a client-side HTML form, the API key
+     * will be visible to anyone who can view the page source or inspect
+     * network requests in the browser's developer tools. For a public
+     * production deployment, prefer sending the form to your own
+     * backend/proxy endpoint that adds the x-api-key header server-side,
+     * rather than exposing a secret API key directly in the browser.
+     * ===================================================================== */
+    const API_KEY = 'e5c584710513d22abfde9c59723a85c6eab7673c2b5370e35bbfa36d99cc9b10';
+    const API_URL = 'https://service-crm-olive.vercel.app/api/internal/leads';
+
+    const FIELDS = [
+      'firstName', 'lastName', 'company', 'title', 'email', 'phone',
+      'website', 'street', 'city', 'state', 'postalCode'
+    ];
+    const REQUIRED_FIELDS = ['lastName', 'company'];
+
+    const form = document.getElementById('leadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnLabel = submitBtn.querySelector('.btn-label');
+    const statusEl = document.getElementById('status');
+
+    let isSubmitting = false;
+
+    function showStatus(type, heading, message) {
+      statusEl.className = 'status show ' + type;
+      statusEl.textContent = '';
+      const strong = document.createElement('strong');
+      strong.textContent = heading;
+      statusEl.appendChild(strong);
+      if (message) {
+        statusEl.appendChild(document.createTextNode(message));
+      }
+    }
+
+    function clearStatus() {
+      statusEl.className = 'status';
+      statusEl.textContent = '';
+    }
+
+    function setLoading(loading) {
+      isSubmitting = loading;
+      submitBtn.disabled = loading;
+      submitBtn.classList.toggle('loading', loading);
+      submitBtn.setAttribute('aria-busy', String(loading));
+      btnLabel.textContent = loading ? 'Submitting...' : 'Submit';
+    }
+
+    function setFieldError(name, hasError) {
+      const input = form.elements[name];
+      const wrapper = input.closest('.field');
+      wrapper.classList.toggle('invalid', hasError);
+      input.setAttribute('aria-invalid', String(hasError));
+    }
+
+    // Adds https:// when the user types a bare domain such as "acme.com".
+    function normalizeWebsite(value) {
+      if (!value) return value;
+      return /^https?:\/\//i.test(value) ? value : 'https://' + value;
+    }
+
+    function isValidUrl(value) {
+      try {
+        const url = new URL(value);
+        return (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname.includes('.');
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function validate() {
+      let firstInvalid = null;
+      const flag = (name, invalid) => {
+        setFieldError(name, invalid);
+        if (invalid && !firstInvalid) firstInvalid = form.elements[name];
+      };
+
+      REQUIRED_FIELDS.forEach((name) => {
+        flag(name, form.elements[name].value.trim() === '');
+      });
+
+      const email = form.elements.email.value.trim();
+      flag('email', email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+
+      const phone = form.elements.phone.value.trim();
+      flag('phone', phone !== '' && !/^[0-9+().\-\s]{7,}$/.test(phone));
+
+      const website = form.elements.website.value.trim();
+      flag('website', website !== '' && !isValidUrl(normalizeWebsite(website)));
+
+      if (firstInvalid) firstInvalid.focus();
+      return !firstInvalid;
+    }
+
+    function buildPayload() {
+      const payload = {};
+      FIELDS.forEach((name) => {
+        let value = form.elements[name].value.trim();
+        if (name === 'website') value = normalizeWebsite(value);
+        // Optional fields left blank are omitted instead of sent as placeholders.
+        if (value !== '') payload[name] = value;
+      });
+      payload.description = null;
+      return payload;
+    }
+
+    // Pulls a human-readable message out of common JSON error shapes.
+    function extractErrorMessage(data) {
+      if (!data) return '';
+      if (typeof data === 'string') return data;
+
+      const candidates = [data.message, data.error, data.detail, data.error_description];
+      for (const c of candidates) {
+        if (typeof c === 'string' && c.trim()) return c;
+        if (c && typeof c === 'object' && typeof c.message === 'string') return c.message;
+      }
+
+      if (Array.isArray(data.errors) && data.errors.length) {
+        return data.errors
+          .map((e) => (typeof e === 'string' ? e : e && (e.message || e.msg)))
+          .filter(Boolean)
+          .join(' ');
+      }
+
+      if (Array.isArray(data) && data.length) {
+        return extractErrorMessage(data[0]);
+      }
+
+      return '';
+    }
+
+    function friendlyStatusMessage(status) {
+      if (status === 400 || status === 422) return 'Some of the information provided is invalid. Please review the form and try again.';
+      if (status === 401 || status === 403) return 'The form is not authorized to submit right now. Please contact us directly.';
+      if (status === 429) return 'Too many submissions. Please wait a moment and try again.';
+      if (status >= 500) return 'Our server encountered a problem. Please try again in a few minutes.';
+      return 'Something went wrong while submitting the form. Please try again.';
+    }
+
+    // Clear a field's error state as soon as the user corrects it.
+    form.addEventListener('input', (e) => {
+      const wrapper = e.target.closest('.field');
+      if (wrapper && wrapper.classList.contains('invalid')) {
+        setFieldError(e.target.name, false);
+      }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (isSubmitting) return;
+
+      clearStatus();
+
+      if (!validate()) {
+        showStatus('error', 'Please check the form.', ' Fix the highlighted fields and submit again.');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'x-api-key': API_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(buildPayload())
+        });
+
+        let data = null;
+        const text = await response.text();
+        if (text) {
+          try { data = JSON.parse(text); } catch (e) { data = null; }
+        }
+
+        if (response.ok) {
+          showStatus('success', 'Thank you!', ' Your information was received and the Lead was created successfully. Our team will be in touch soon.');
+          form.reset();
+          FIELDS.forEach((name) => setFieldError(name, false));
+        } else {
+          const apiMessage = extractErrorMessage(data);
+          // Auth/server errors get a generic message so internals aren't exposed.
+          const useApiMessage = apiMessage && response.status < 500 && response.status !== 401 && response.status !== 403;
+          showStatus('error', 'We couldn’t submit your information.', ' ' + (useApiMessage ? apiMessage : friendlyStatusMessage(response.status)));
+        }
+      } catch (err) {
+        console.error('Lead submission failed:', err);
+        showStatus('error', 'Connection problem.', ' We couldn’t reach our server. Please check your internet connection and try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
